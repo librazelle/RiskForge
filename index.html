@@ -1,353 +1,111 @@
 <!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FundedNext Flex 50K - Risk Engine & ICT 2022 Execution Suite</title>
-  
-  <!-- PWA Meta -->
-  <meta name="theme-color" content="#0f172a">
-  <meta name="description" content="Kalkulator Risk Engine & Rule Guardrail khusus FundedNext Futures Flex 50K Account">
-  <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkZ1bmRlZE5leHQgRmxleCA1MEsgUmlzayBFbmdpbmUiLAogICJzaG9ydF9uYW1lIjogIkZsZXg1MEtSaXNrIiwKICAic3RhcnRfdXJsIjogIi4iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwZjE3MmEiLAogICJ0aGVtZV9jb2xvciI6ICIjMGYxNzJhIgp9">
-
-  <!-- Tailwind CSS & Chart.js -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0b0f19; color: #f1f5f9; }
-    .mono { font-family: 'JetBrains Mono', monospace; }
-    .glass { background: rgba(18, 24, 38, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
-    .glass-card { background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255, 255, 255, 0.05); }
-    input, select { background: rgba(15, 23, 42, 0.8) !important; border: 1px solid rgba(255, 255, 255, 0.12) !important; color: #f8fafc !important; }
-    input:focus, select:focus { border-color: #3b82f6 !important; outline: none !important; ring: 2px #3b82f6; }
-    .badge-pass { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
-    .badge-warn { background: rgba(234, 179, 8, 0.15); color: #fde047; border: 1px solid rgba(234, 179, 8, 0.3); }
-    .badge-danger { background: rgba(239, 68, 68, 0.15); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); }
-  </style>
-</head>
-<body class="min-h-screen pb-12">
-
-  <!-- Top Navbar -->
-  <header class="glass sticky top-0 z-50 border-b border-slate-800 px-4 py-3 mb-6">
-    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="p-2 bg-blue-600/20 text-blue-400 rounded-lg border border-blue-500/30">
-          <i data-lucide="shield-alert" class="w-6 h-6"></i>
-        </div>
-        <div>
-          <h1 class="font-bold text-lg tracking-tight text-white flex items-center gap-2">
-            FundedNext Flex 50K Risk Engine
-            <span class="text-xs px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 font-mono">FUTURES</span>
-          </h1>
-          <p class="text-xs text-slate-400">Dr. David Paul Math Engine + ICT 2022 Execution Protocol</p>
-        </div>
-      </div>
-
-      <!-- Quick Rule Pill Badges -->
-      <div class="flex items-center gap-2 text-xs font-mono">
-        <div class="px-3 py-1.5 rounded-lg bg-slate-900/80 border border-slate-700/60 text-slate-300">
-          Max Loss: <span class="text-red-400 font-bold">$1,500</span> (Trailing EOD)
-        </div>
-        <div class="px-3 py-1.5 rounded-lg bg-slate-900/80 border border-slate-700/60 text-slate-300">
-          Max Contracts: <span class="text-amber-400 font-bold">3 Mini / 30 Micro</span>
-        </div>
-        <button id="pwaInstallBtn" class="hidden flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-sans font-medium transition">
-          <i data-lucide="download" class="w-4 h-4"></i> Install App
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <main class="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-    <!-- LEFT COLUMN: Position Sizer & Guardrails (Lg: 5 col) -->
-    <section class="lg:col-span-5 space-y-6">
-      
-      <!-- Calculator Box -->
-      <div class="glass p-5 rounded-2xl space-y-5">
-        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-          <h2 class="font-bold text-base text-white flex items-center gap-2">
-            <i data-lucide="calculator" class="w-5 h-5 text-blue-400"></i>
-            Futures Position Sizer
-          </h2>
-          <span class="text-xs text-slate-400 font-mono">Rules 50K Active</span>
-        </div>
-
-        <!-- Inputs Grid -->
-        <div class="grid grid-cols-2 gap-4 text-sm">
-          <div>
-            <label class="block text-xs font-medium text-slate-400 mb-1">Account Balance ($)</label>
-            <input type="number" id="accBalance" value="50000" class="w-full px-3 py-2 rounded-xl font-mono text-white" />
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-slate-400 mb-1">Risk per Trade (%)</label>
-            <input type="number" id="riskPercent" value="1.0" step="0.1" max="2.0" class="w-full px-3 py-2 rounded-xl font-mono text-white" />
-          </div>
-
-          <div class="col-span-2">
-            <label class="block text-xs font-medium text-slate-400 mb-1">Futures Instrument Target</label>
-            <select id="assetSelect" class="w-full px-3 py-2 rounded-xl font-medium text-white">
-              <option value="MNQ" data-tick="0.25" data-tickval="0.50" data-mult="2" data-type="micro">MNQ - Micro E-mini Nasdaq 100 ($2/pt, $0.50/tk)</option>
-              <option value="MES" data-tick="0.25" data-tickval="1.25" data-mult="5" data-type="micro">MES - Micro E-mini S&P 500 ($5/pt, $1.25/tk)</option>
-              <option value="NQ" data-tick="0.25" data-tickval="5.00" data-mult="20" data-type="mini">NQ - E-mini Nasdaq 100 ($20/pt, $5.00/tk)</option>
-              <option value="ES" data-tick="0.25" data-tickval="12.50" data-mult="50" data-type="mini">ES - E-mini S&P 500 ($50/pt, $12.50/tk)</option>
-              <option value="MYM" data-tick="1.00" data-tickval="0.50" data-mult="0.5" data-type="micro">MYM - Micro E-mini Dow ($0.50/pt)</option>
-              <option value="YM" data-tick="1.00" data-tickval="5.00" data-mult="5" data-type="mini">YM - E-mini Dow ($5/pt)</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="block text-xs font-medium text-slate-400 mb-1">Entry Price</label>
-            <input type="number" id="entryPrice" value="20500.00" step="0.25" class="w-full px-3 py-2 rounded-xl font-mono text-white" />
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-slate-400 mb-1">Stop Loss Price</label>
-            <input type="number" id="slPrice" value="20475.00" step="0.25" class="w-full px-3 py-2 rounded-xl font-mono text-white" />
-          </div>
-        </div>
-
-        <!-- Calculation Output Cards -->
-        <div class="space-y-3 pt-2">
-          <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 flex items-center justify-between">
-            <div>
-              <p class="text-xs text-slate-400">Allowed Risk Amount</p>
-              <p id="riskDollarOut" class="text-xl font-bold font-mono text-emerald-400">$500.00</p>
-            </div>
-            <div class="text-right">
-              <p class="text-xs text-slate-400">SL Distance</p>
-              <p id="slPtsOut" class="text-sm font-semibold font-mono text-slate-200">25.00 pts (100 ticks)</p>
-            </div>
-          </div>
-
-          <div class="p-4 rounded-xl bg-blue-950/40 border border-blue-900/50 flex items-center justify-between">
-            <div>
-              <p class="text-xs text-blue-300 font-medium">Recommended Position Size</p>
-              <div class="flex items-baseline gap-2">
-                <span id="contractsOut" class="text-3xl font-extrabold font-mono text-white">10</span>
-                <span id="contractTypeLabel" class="text-xs font-bold text-blue-400 uppercase">Micro Contracts</span>
-              </div>
-            </div>
-            <div class="text-right">
-              <span id="contractEquivLabel" class="text-xs font-mono px-2.5 py-1 rounded-md bg-blue-900/60 text-blue-200 border border-blue-700/50">
-                1.00 E-mini Equiv
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Guardrail Alert Banner -->
-        <div id="guardrailBanner" class="p-3.5 rounded-xl border flex items-start gap-3 text-xs badge-pass">
-          <i id="guardrailIcon" data-lucide="check-circle-2" class="w-5 h-5 shrink-0 mt-0.5"></i>
-          <div>
-            <p id="guardrailTitle" class="font-bold">Position Safe & Compliant</p>
-            <p id="guardrailDesc" class="mt-0.5 opacity-90">Sizing berada di bawah batas maksimum 30 Micro / 3 E-mini. MLL Trailing aman.</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- FundedNext Flex 50K Rule Tracker -->
-      <div class="glass p-5 rounded-2xl space-y-4">
-        <h3 class="font-bold text-sm text-white flex items-center gap-2 border-b border-slate-800 pb-2">
-          <i data-lucide="target" class="w-4 h-4 text-purple-400"></i>
-          FundedNext 50K Flex Challenge Guardrails
-        </h3>
-
-        <div class="space-y-3 text-xs">
-          <!-- Profit Target & Consistency 40% -->
-          <div>
-            <div class="flex justify-between mb-1">
-              <span class="text-slate-400">Profit Target ($2,500 / 5%)</span>
-              <span class="font-mono text-slate-200 font-semibold">$0 / $2,500</span>
-            </div>
-            <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-              <div class="bg-blue-500 h-full w-[0%]"></div>
-            </div>
-          </div>
-
-          <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800 space-y-1">
-            <div class="flex justify-between font-medium">
-              <span class="text-slate-300">Daily Profit Cap (40% Consistency Rule)</span>
-              <span class="font-mono text-amber-400 font-bold">$1,000 / day max</span>
-            </div>
-            <p class="text-[11px] text-slate-400 leading-normal">
-              Jangan menghasilkan lebih dari $1,000 dalam 1 hari trading agar target profit tidak naik otomatis secara proporsional.
-            </p>
-          </div>
-
-          <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800 space-y-1">
-            <div class="flex justify-between font-medium">
-              <span class="text-slate-300">Benchmark Days (Payout Rule)</span>
-              <span class="font-mono text-emerald-400 font-bold">5 Days Min ($200+/day)</span>
-            </div>
-            <p class="text-[11px] text-slate-400 leading-normal">
-              Di fase Funded, minimal 5 hari trading aktif dengan profit min $200 per hari untuk bisa mengajukan *payout* (Reward Split 95%).
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- RIGHT COLUMN: ICT 2022 Checklist & Dr. David Paul Engine (Lg: 7 col) -->
-    <section class="lg:col-span-7 space-y-6">
-
-      <!-- ICT 2022 Model & IFVG Checklist Module -->
-      <div class="glass p-5 rounded-2xl space-y-4">
-        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-          <div>
-            <h2 class="font-bold text-base text-white flex items-center gap-2">
-              <i data-lucide="list-checks" class="w-5 h-5 text-emerald-400"></i>
-              ICT Mentorship 2022 + IFVG Setup Audit
-            </h2>
-            <p class="text-xs text-slate-400">Deteksi Bias & Kualifikasi Grade Entry</p>
-          </div>
-          <div id="setupScoreBadge" class="px-3 py-1 rounded-lg text-xs font-mono font-bold badge-danger">
-            GRADE: NO TRADE (0/7)
-          </div>
-        </div>
-
-        <!-- 7 Steps Checkboxes -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 text-xs">
-          <label class="flex items-start gap-2.5 p-2.5 rounded-xl glass-card cursor-pointer hover:bg-slate-800/60 transition">
-            <input type="checkbox" class="ict-check mt-0.5 rounded border-slate-700 text-blue-600 focus:ring-0" />
-            <div>
-              <span class="font-bold text-slate-200">1. HTF Draw on Liquidity (DOL)</span>
-              <p class="text-[11px] text-slate-400">Ada magnet harga JELAS di HTF (Daily/4H BSL atau SSL).</p>
-            </div>
-          </label>
-
-          <label class="flex items-start gap-2.5 p-2.5 rounded-xl glass-card cursor-pointer hover:bg-slate-800/60 transition">
-            <input type="checkbox" class="ict-check mt-0.5 rounded border-slate-700 text-blue-600 focus:ring-0" />
-            <div>
-              <span class="font-bold text-slate-200">2. ICT Killzone Window</span>
-              <p class="text-[11px] text-slate-400">London (08-11 WIB), NY AM (19:30-23:00 WIB), atau Silver Bullet.</p>
-            </div>
-          </label>
-
-          <label class="flex items-start gap-2.5 p-2.5 rounded-xl glass-card cursor-pointer hover:bg-slate-800/60 transition">
-            <input type="checkbox" class="ict-check mt-0.5 rounded border-slate-700 text-blue-600 focus:ring-0" />
-            <div>
-              <span class="font-bold text-slate-200">3. Liquidity Sweep (Old High/Low)</span>
-              <p class="text-[11px] text-slate-400">Harga menyapu Asian Range, Equal Highs/Lows, atau Prev Day H/L.</p>
-            </div>
-          </label>
-
-          <label class="flex items-start gap-2.5 p-2.5 rounded-xl glass-card cursor-pointer hover:bg-slate-800/60 transition">
-            <input type="checkbox" class="ict-check mt-0.5 rounded border-slate-700 text-blue-600 focus:ring-0" />
-            <div>
-              <span class="font-bold text-slate-200">4. Market Structure Shift (MSS)</span>
-              <p class="text-[11px] text-slate-400">Break of structure di LTF dengan *displacement* candle bertenaga.</p>
-            </div>
-          </label>
-
-          <label class="flex items-start gap-2.5 p-2.5 rounded-xl glass-card cursor-pointer hover:bg-slate-800/60 transition">
-            <input type="checkbox" class="ict-check mt-0.5 rounded border-slate-700 text-blue-600 focus:ring-0" />
-            <div>
-              <span class="font-bold text-slate-200">5. FVG or IFVG Confirmation</span>
-              <p class="text-[11px] text-slate-400">Ada Fair Value Gap valid ATAU Inversion FVG (FVG lama jebol & retest).</p>
-            </div>
-          </label>
-
-          <label class="flex items-start gap-2.5 p-2.5 rounded-xl glass-card cursor-pointer hover:bg-slate-800/60 transition">
-            <input type="checkbox" class="ict-check mt-0.5 rounded border-slate-700 text-blue-600 focus:ring-0" />
-            <div>
-              <span class="font-bold text-slate-200">6. Premium / Discount Array</span>
-              <p class="text-[11px] text-slate-400">BUY wajib di area Discount (&lt;50%), SELL wajib di Premium (&gt;50%).</p>
-            </div>
-          </label>
-
-          <label class="flex items-start gap-2.5 p-2.5 rounded-xl glass-card cursor-pointer hover:bg-slate-800/60 font-semibold col-span-1 md:col-span-2 border-emerald-500/30">
-            <input type="checkbox" class="ict-check mt-0.5 rounded border-slate-700 text-blue-600 focus:ring-0" />
-            <div>
-              <span class="font-bold text-emerald-400">7. Minimal Risk-to-Reward 1:2 Secured</span>
-              <p class="text-[11px] text-slate-400">Target TP berada di likuiditas lawan dengan rasio minimal $1:2$.</p>
-            </div>
-          </label>
-        </div>
-
-        <!-- Dynamic Recommendation Alert -->
-        <div id="ictRecommendation" class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 text-xs">
-          <div class="flex items-center gap-2 text-amber-400 font-bold mb-1">
-            <i data-lucide="alert-triangle" class="w-4 h-4"></i>
-            SIAPKAN DISIPLIN: Skor di Bawah 5 (NO TRADE)
-          </div>
-          <p class="text-slate-400">Jangan dipaksakan. Pasar tidak mewajibkan Anda trading setiap hari. Tahan tangan untuk mencegah *confirmation bias* & *zero-float euphoria*.</p>
-        </div>
-      </div>
-
-      <!-- Dr. David Paul Mindset & 13-Trade Discipline Tracker -->
-      <div class="glass p-5 rounded-2xl space-y-4">
-        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-          <div>
-            <h3 class="font-bold text-base text-white flex items-center gap-2">
-              <i data-lucide="brain" class="w-5 h-5 text-purple-400"></i>
-              13-Trade Habit & Euphoria Trap Tracker
-            </h3>
-            <p class="text-xs text-slate-400">Protokol Penghancur Bias Otak (Dr. David Paul)</p>
-          </div>
-          <button id="resetTrackerBtn" class="text-xs text-slate-400 hover:text-white underline">Reset Batch</button>
-        </div>
-
-        <!-- Euphoria Warning Alert (Triggers on 3 consecutive wins) -->
-        <div id="euphoriaAlert" class="hidden p-3.5 rounded-xl bg-red-950/60 border border-red-700/60 text-xs text-red-200 space-y-1">
-          <div class="flex items-center gap-2 font-bold text-red-400">
-            <i data-lucide="flame" class="w-4 h-4"></i>
-            EUPHORIA WARNING DETECTED! (3 WIN STREAK)
-          </div>
-          <p>Kelenjar Pituitari Anda sedang memompa Dopamin tinggi. Otak Anda mulai merasa *invincible* (tidak bisa kalah). <strong>DILARANG MENAIKKAN RISK / LOT SIZE!</strong></p>
-        </div>
-
-        <!-- 13 Trade Boxes Grid -->
-        <div class="grid grid-cols-5 md:grid-cols-13 gap-2" id="tradeGrid">
-          <!-- Generated via JS -->
-        </div>
-
-        <div class="flex items-center justify-between text-xs text-slate-400 pt-1">
-          <span>Batch Progress: <strong id="batchProgressText" class="text-white">0/13 Trades Executed</strong></span>
-          <span class="text-emerald-400 font-mono" id="disciplinedCount">0 Perfect Executions</span>
-        </div>
-      </div>
-
-    </section>
-
-    <!-- FULL WIDTH: Probability Cluster & Monte Carlo Equity Curve -->
-    <section class="lg:col-span-12 glass p-5 rounded-2xl space-y-4">
-      <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-3">
-        <div>
-          <h3 class="font-bold text-base text-white flex items-center gap-2">
-            <i data-lucide="line-chart" class="w-5 h-5 text-blue-400"></i>
-            Monte Carlo Equity Simulation & Loss Cluster Matrix
-          </h3>
-          <p class="text-xs text-slate-400">Simulasi 50 Trade Jangka Panjang dengan Probabilitas Matematis</p>
-        </div>
-
-        <div class="flex items-center gap-4 text-xs font-mono">
-          <div>
-            <label class="text-slate-400 block text-[10px]">Win Rate (%)</label>
-            <input type="number" id="simWinRate" value="50" min="30" max="90" class="w-20 px-2 py-1 rounded-lg text-white" />
-          </div>
-          <div>
-            <label class="text-slate-400 block text-[10px]">Reward Ratio (R:R)</label>
-            <input type="number" id="simRR" value="2.0" step="0.5" min="1.0" class="w-20 px-2 py-1 rounded-lg text-white" />
-          </div>
-          <button id="runSimBtn" class="mt-3.5 px-4 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-sans font-semibold transition">
-            Run Simulation
-          </button>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 items-center">
-        <!-- Stats Summary -->
-        <div class="space-y-3 text-xs">
-          <div class="p-3 rounded-xl bg-slate-900 border border-slate-800">
-            <p class="text-slate-400">Mathematical Expectancy (E)</p>
-            <p id="expectancyVal" class="text-lg font-bold font-mono text-emerald-400">+$0.50 per $1 Risk</p>
-          </div>
-          <div class="p-3 rounded-xl bg-slate-900 border border-slate-800">
-            <p class="text-slate-400">Expected 4-Loss Streak Odds</p>
-            <p id="lossStreakOdds" class="text-sm font-semibold font-mono text-amber-400">1x every 16 trades</p>
-          </div>
-          <div
+<html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b1020"><meta name="description" content="RiskForge trading risk calculator and process discipline dashboard"><title>RiskForge | Futures Risk & Discipline</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1020;--panel:#121c31;--panel2:#0d1527;--line:#2a3853;--muted:#93a1ba;--text:#edf3ff;--cyan:#59dfd0;--green:#52d6a4;--yellow:#ffcc70;--red:#ff788e;--blue:#829fff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top left,#1a2850 0,transparent 38%),var(--bg);color:var(--text);font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.top{position:sticky;top:0;z-index:3;background:#0b1020eF;backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:15px 20px}.wrap{max-width:1250px;margin:auto}.brandrow{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}.brand{display:flex;align-items:center;gap:11px}.mark{height:42px;width:42px;border:1px solid #40568b;background:#182747;border-radius:13px;display:grid;place-items:center;color:var(--cyan);font-size:22px}.brand h1{margin:0;font-size:20px;letter-spacing:-.03em}.sub{color:var(--muted);font-size:11px}.chips{display:flex;gap:8px;flex-wrap:wrap}.chip{border:1px solid var(--line);background:#10192b;color:#bdc9df;padding:7px 10px;border-radius:9px;font-size:10px}.chip strong{color:var(--yellow);font-family:ui-monospace,monospace}
+main{padding:20px;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:16px}.stack{display:flex;flex-direction:column;gap:16px}.panel{background:linear-gradient(150deg,rgba(20,30,52,.97),rgba(14,22,39,.97));border:1px solid var(--line);border-radius:17px;padding:17px;box-shadow:0 12px 28px #0002;min-width:0}.head{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:14px}.head h2,.head h3{margin:0;font-size:15px}.eyebrow{font-size:9px;text-transform:uppercase;letter-spacing:.13em;color:var(--muted);font-weight:800}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.field{min-width:0}.full{grid-column:1/-1}.caption{display:block;font-size:10px;color:var(--muted);font-weight:700;margin-bottom:5px}.field input,.field select{width:100%;min-width:0;padding:10px;border:1px solid #35435d;border-radius:10px;background:#0b1324;color:var(--text)}input[type=number]{font-family:ui-monospace,monospace}
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:12px}.kpi,.tile,.mini{background:#0b1324;border:1px solid var(--line);border-radius:12px;padding:11px;min-width:0}.label{font-size:9px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.05em}.value{font:700 21px/1.4 ui-monospace,monospace;overflow-wrap:anywhere}.hint{font-size:10px;color:var(--muted)}.accent{color:var(--cyan)}.warntext{color:var(--yellow)}.badtext{color:var(--red)}.badge{display:inline-flex;padding:4px 8px;border:1px solid var(--line);border-radius:8px;font-size:10px;font-weight:800;white-space:nowrap}.good{background:#102b2a;color:#77e5bd;border-color:#245b50}.warn{background:#302719;color:#ffcf75;border-color:#6d5329}.bad{background:#341b2a;color:#ff91a2;border-color:#743346}.neutral{background:#1a2438;color:#c0cce0}
+.banner,.alert{padding:11px;border:1px solid var(--line);border-radius:11px;background:#0b1324;font-size:11px;margin-top:11px}.banner{display:flex;gap:9px}.banner strong,.alert strong{display:block;margin-bottom:3px}.banner p,.alert p{margin:0;opacity:.85;color:inherit}.stats3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:9px}.mini label{display:block;color:var(--muted);font-size:9px}.mini strong{font:700 13px ui-monospace,monospace;display:block;margin-top:3px;overflow-wrap:anywhere}
+.checklist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.check{display:flex;gap:8px;align-items:flex-start;padding:10px;border:1px solid var(--line);border-radius:11px;background:#10192b;cursor:pointer;font-size:11px}.check:hover{border-color:#52668d}.check input{accent-color:var(--cyan);margin-top:3px}.check strong{display:block;font-size:11px}.check small{display:block;color:var(--muted);font-size:9px;margin-top:3px;line-height:1.45}.check:last-child{border-color:#32635a}
+.tradegrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}.tradebox{background:#0b1324;border:1px solid var(--line);border-radius:10px;padding:7px;min-width:0}.tradebox button{width:100%;border:1px solid #34415b;background:#162139;color:#bfcae0;border-radius:7px;padding:7px 1px;font:700 10px ui-monospace,monospace}.tradebox button.win{background:#123b32;color:#73e7bd;border-color:#276c58}.tradebox button.loss{background:#421d2c;color:#ff9aaa;border-color:#80364b}.tradebox button.be{background:#392f19;color:#ffd780;border-color:#70592b}.rulefollow{display:flex;gap:3px;align-items:center;font-size:8px;color:var(--muted);margin-top:6px;white-space:nowrap}.rulefollow input{accent-color:var(--green);margin:0}.trackerfoot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;color:var(--muted);font-size:10px;margin-top:10px}
+button.ghost{border:1px solid var(--line);color:#cbd6e9;background:#162139;border-radius:8px;padding:6px 9px;font-size:10px;font-weight:700}.wide{grid-column:1/-1}.simcontrols{display:flex;gap:8px;align-items:end;flex-wrap:wrap}.simcontrols .field{width:115px}.simcontrols .field input{padding:8px}.primary{border:1px solid #587cf2;background:#3154cc;color:white;padding:9px 12px;border-radius:9px;font-weight:800;font-size:10px}.simresults{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}.tile span{display:block;color:var(--muted);font-size:9px}.tile strong{display:block;font:700 14px ui-monospace,monospace;margin-top:4px;overflow-wrap:anywhere}.chartbox{border:1px solid var(--line);border-radius:12px;background:#0b1324;padding:9px;margin-top:11px}.chartbox canvas{display:block;width:100%;height:210px}.tablewrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:10px}th,td{padding:8px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}th{color:var(--muted)}td:first-child,th:first-child{text-align:left}tbody tr:last-child td{border:0}.footer{max-width:1250px;margin:auto;padding:0 20px 22px;color:#8290a8;font-size:10px;line-height:1.6}
+@media(max-width:880px){main{grid-template-columns:1fr;padding:13px}.top{padding:12px 13px}.footer{padding:0 13px 18px}.wide{grid-column:auto}.simresults{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.brand h1{font-size:17px}.panel{padding:13px}.value{font-size:19px}.checklist{grid-template-columns:1fr}.tradegrid{grid-template-columns:repeat(4,minmax(0,1fr))}.stats3{grid-template-columns:1fr 1fr}.stats3 .mini:last-child{grid-column:1/-1}.head{align-items:flex-start}.simcontrols .field{flex:1;width:auto}.simcontrols .primary{flex:1}}
+</style></head><body>
+<header class="top"><div class="wrap brandrow"><div class="brand"><div class="mark">⛨</div><div><h1>RiskForge <span class="badge neutral">FUTURES</span></h1><div class="sub">Position sizing · ICT setup audit · process discipline</div></div></div><div class="chips"><span class="chip">FundedNext Flex 50K · <strong>3 mini / 30 micro</strong></span><span class="chip">Maximum Loss Limit <strong>$1,500 EOD</strong></span></div></div></header>
+<main class="wrap">
+<section class="stack">
+<div class="panel"><div class="head"><div><div class="eyebrow">Pre-trade calculator</div><h2>Position Sizer</h2></div><span id="direction" class="badge neutral">DIRECTION: --</span></div>
+<div class="grid2">
+<div class="field"><label class="caption" for="balance">Account equity ($)</label><input id="balance" type="number" min="0" step="100" value="50000"></div>
+<div class="field"><label class="caption" for="risk">Risk per trade (%)</label><input id="risk" type="number" min="0.01" max="10" step="0.1" value="1"></div>
+<div class="field full"><label class="caption" for="asset">Futures contract</label><select id="asset"><option value="MNQ">MNQ · Micro Nasdaq · $2 / point</option><option value="MES">MES · Micro S&P · $5 / point</option><option value="NQ">NQ · E-mini Nasdaq · $20 / point</option><option value="ES">ES · E-mini S&P · $50 / point</option><option value="MYM">MYM · Micro Dow · $0.50 / point</option><option value="YM">YM · E-mini Dow · $5 / point</option></select></div>
+<div class="field"><label class="caption" for="entry">Entry price</label><input id="entry" type="number" step=".25" value="20500"></div>
+<div class="field"><label class="caption" for="stop">Stop-loss price</label><input id="stop" type="number" step=".25" value="20475"></div>
+<div class="field full"><label class="caption" for="target">Take-profit price</label><input id="target" type="number" step=".25" value="20550"></div>
+</div>
+<div class="kpis">
+<div class="kpi"><div class="label">Risk budget</div><div class="value accent" id="riskBudget">$500.00</div><div class="hint">Equity × risk %</div></div>
+<div class="kpi"><div class="label">Stop distance</div><div class="value" id="distance">25.00 pts</div><div class="hint" id="ticks">100 ticks</div></div>
+<div class="kpi"><div class="label">Recommended size</div><div class="value" id="contracts">10</div><div class="hint" id="contractKind">MNQ micro contracts</div></div>
+<div class="kpi"><div class="label">Estimated stop risk</div><div class="value" id="actualRisk">$500.00</div><div class="hint" id="riskPctActual">100% of risk budget</div></div>
+</div>
+<div class="stats3"><div class="mini"><label>Planned reward</label><strong class="accent" id="reward">$1,000.00</strong></div><div class="mini"><label>Risk : reward</label><strong id="rr">1 : 2.00</strong></div><div class="mini"><label>Break-even win rate</label><strong id="beRate">33.3%</strong></div></div>
+<div id="ruleBanner" class="banner good"><div>✓</div><div><strong>Size within guardrails</strong><p>Risk stays within your selected budget and contract cap.</p></div></div>
+</div>
+<div class="panel"><div class="head"><div><div class="eyebrow">Risk scenarios</div><h2>Loss-streak stress test</h2></div><span class="badge warn">Illustrative</span></div><div class="sub" style="margin-bottom:8px">Drawdown ketika risk % dihitung dari equity berjalan.</div><div class="tablewrap"><table><thead><tr><th>Loss streak</th><th>Equity tersisa</th><th>Drawdown</th><th>Recovery diperlukan</th></tr></thead><tbody id="drawdownRows"></tbody></table></div></div>
+</section>
+<section class="stack">
+<div class="panel"><div class="head"><div><div class="eyebrow">Before you enter</div><h2>ICT 2022 + IFVG checklist</h2></div><span id="scoreBadge" class="badge bad">0/7 · NO TRADE</span></div>
+<div class="checklist">
+<label class="check"><input type="checkbox" class="ict-check"><span><strong>HTF Draw on Liquidity</strong><small>Magnet harga jelas dari Daily / H4 / H1.</small></span></label>
+<label class="check"><input type="checkbox" class="ict-check"><span><strong>Killzone yang direncanakan</strong><small>Sesi sesuai plan, bukan karena bosan.</small></span></label>
+<label class="check"><input type="checkbox" class="ict-check"><span><strong>Liquidity sweep</strong><small>Level high/low yang relevan disapu.</small></span></label>
+<label class="check"><input type="checkbox" class="ict-check"><span><strong>MSS + displacement</strong><small>Shift struktur dan displacement jelas.</small></span></label>
+<label class="check"><input type="checkbox" class="ict-check"><span><strong>FVG / IFVG valid</strong><small>Zona entry dan retest sesuai model.</small></span></label>
+<label class="check"><input type="checkbox" class="ict-check"><span><strong>Premium / discount</strong><small>Lokasi entry cocok dengan arah dan range.</small></span></label>
+<label class="check"><input type="checkbox" class="ict-check"><span><strong>R:R minimal 1:2</strong><small>Target realistis dan tak menabrak struktur.</small></span></label></div>
+<div id="ictAdvice" class="alert bad"><strong>NO TRADE · Lengkapi validasi</strong><p>Checklist membantu menguji proses, bukan membuktikan probabilitas menang. Jangan centang berdasarkan harapan.</p></div>
+</div>
+<div class="panel"><div class="head"><div><div class="eyebrow">Behaviour guardrail</div><h2>13-trade habit tracker</h2><div class="sub">Ketuk hasil trade; centang jika aturan dipatuhi.</div></div><button id="resetTracker" class="ghost">Reset batch</button></div>
+<div id="lossAlert" class="alert bad" hidden><strong>LOSS TERAKHIR · Berhenti sejenak</strong><p>Jangan membalas market. Review eksekusi dan patuhi batas berhenti harian.</p></div><div id="winAlert" class="alert warn" hidden><strong>3+ WIN BERUNTUN · Jaga ukuran posisi</strong><p>Win streak bukan izin menaikkan lot. Konsisten dengan risk plan.</p></div>
+<div id="tradeGrid" class="tradegrid"></div><div class="trackerfoot"><span id="batchProgress">0/13 trade tercatat</span><span id="tradeStats">W 0 · L 0 · BE 0</span><span id="disciplineStats">Rule-followed 0/0</span></div>
+</div>
+<div class="panel"><div class="head"><div><div class="eyebrow">Probability lab</div><h2>Monte Carlo equity paths</h2><div class="sub">Randomized sample, not a market forecast.</div></div></div>
+<div class="simcontrols"><div class="field"><label class="caption" for="winRate">Assumed win rate (%)</label><input id="winRate" type="number" min="1" max="99" step="1" value="50"></div><div class="field"><label class="caption" for="simRR">Average R multiple</label><input id="simRR" type="number" min=".1" max="10" step=".1" value="2"></div><button id="runSim" class="primary">Run 500 paths</button></div>
+<div class="simresults"><div class="tile"><span>Expectancy (R / trade)</span><strong id="expectancy">+0.50R</strong></div><div class="tile"><span>Median ending equity</span><strong id="medianEquity">$0</strong></div><div class="tile"><span>Median max drawdown</span><strong id="medianDD">0.0%</strong></div><div class="tile"><span>Chance of 4-loss streak</span><strong id="fourLossOdds">--</strong></div></div>
+<div class="chartbox"><canvas id="equityChart" aria-label="Example simulated equity path" role="img"></canvas></div><div class="sub" style="margin-top:9px">Assumes independent outcomes and fixed-fractional risk. Real trading includes regime changes, fees, slippage, gaps, and correlated losses. A simulation cannot validate your win-rate assumption.</div>
+</div></section></main>
+<footer class="footer"><strong>RiskForge is an educational planning tool, not investment advice or an order-entry system.</strong> Verify multiplier, tick value, fees, and rules for your specific account. Estimated risk excludes commissions, slippage, gaps, and execution failures. Settings and trade data stay in this browser's local storage; they do not sync between devices.</footer>
+<script>
+(function(){"use strict";
+const A={MNQ:{p:2,t:.25,type:"micro",name:"MNQ micro"},MES:{p:5,t:.25,type:"micro",name:"MES micro"},NQ:{p:20,t:.25,type:"mini",name:"NQ E-mini"},ES:{p:50,t:.25,type:"mini",name:"ES E-mini"},MYM:{p:.5,t:1,type:"micro",name:"MYM micro"},YM:{p:5,t:1,type:"mini",name:"YM E-mini"}};
+const $=id=>document.getElementById(id),ids=["balance","risk","asset","entry","stop","target"];
+const store={get(k,d){try{let v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const saved=store.get("riskforge_settings",{});ids.forEach(id=>{if(saved[id]!==undefined)$(id).value=saved[id]});
+function money(n){return Number.isFinite(n)?n.toLocaleString("en-US",{style:"currency",currency:"USD",minimumFractionDigits:2,maximumFractionDigits:2}):"--"}
+function fmt(n,d=2){return Number.isFinite(n)?n.toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d}):"--"}
+function saveSettings(){let x={};ids.forEach(id=>x[id]=$(id).value);store.set("riskforge_settings",x)}
+function banner(type,title,desc){$("ruleBanner").className="banner "+type;$("ruleBanner").innerHTML="<div>"+(type==="good"?"✓":type==="warn"?"!":"×")+"</div><div><strong>"+title+"</strong><p>"+desc+"</p></div>"}
+function calculate(){
+ const bal=Number($("balance").value),rp=Number($("risk").value),entry=Number($("entry").value),sl=Number($("stop").value),tp=Number($("target").value),a=A[$("asset").value];
+ const dist=Math.abs(entry-sl),toTP=Math.abs(tp-entry),long=entry>sl,budget=bal*rp/100,per=dist*a.p,valid=bal>0&&rp>0&&dist>0&&Number.isFinite(dist),raw=valid?Math.floor((budget+1e-9)/per):0,cap=a.type==="micro"?30:3,size=valid?Math.min(raw,cap):0,actual=size*per,tpValid=entry!==tp&&(long?tp>entry:tp<entry),rr=tpValid&&dist>0?toTP/dist:0,reward=tpValid?size*toTP*a.p:0,ticks=dist/a.t;
+ $("direction").className="badge "+(entry>sl?"good":entry<sl?"bad":"neutral");$("direction").textContent=entry>sl?"LONG · BUY":entry<sl?"SHORT · SELL":"DIRECTION: --";
+ $("riskBudget").textContent=money(budget);$("distance").textContent=fmt(dist)+" pts";$("ticks").textContent=fmt(ticks,0)+" ticks · "+money(per)+" / contract";
+ $("contracts").textContent=String(size);$("contractKind").textContent=a.name+" · cap "+cap;$("actualRisk").textContent=money(actual);$("riskPctActual").textContent=budget>0?fmt(actual/budget*100,1)+"% of budget":"--";
+ $("reward").textContent=tpValid?money(reward):"--";$("rr").textContent=tpValid?"1 : "+fmt(rr):"Check TP side";$("beRate").textContent=tpValid?fmt(100/(1+rr),1)+"%":"--";
+ const badTick=Math.abs(entry/a.t-Math.round(entry/a.t))>1e-6||Math.abs(sl/a.t-Math.round(sl/a.t))>1e-6;
+ if(!(bal>0&&rp>0&&Number.isFinite(bal)&&Number.isFinite(rp)))banner("bad","Input tidak valid","Equity dan risk harus angka positif.");
+ else if(!dist)banner("bad","Stop-loss tidak valid","Entry dan SL tidak boleh sama. Kalkulator tidak memaksakan minimum satu kontrak.");
+ else if(!size)banner("bad","Risk budget tidak cukup","Satu kontrak berisiko "+money(per)+". Turunkan risk atau tinjau jarak SL; jangan memaksakan size.");
+ else if(!tpValid)banner("warn","Take-profit tidak searah","Untuk LONG, TP harus di atas entry; untuk SHORT, TP harus di bawah entry.");
+ else if(raw>cap)banner("warn","Size dibatasi contract cap","Budget memungkinkan "+raw+" kontrak, tetapi cap Flex 50K membatasi ke "+cap+". Estimasi risk aktual "+money(actual)+".");
+ else if(badTick)banner("warn","Periksa tick increment","Harga Entry atau SL tidak sejajar dengan tick size "+a.t+". Validasi harga sebelum memakai hasil.");
+ else if(rp>2)banner("warn","Risk per trade agresif","Risk "+fmt(rp)+"% lebih besar dari 2%. Contract cap bukan perlindungan dari drawdown.");
+ else banner("good","Sizing lolos pemeriksaan kalkulator","Risk estimasi "+money(actual)+" dari budget "+money(budget)+". Belum termasuk komisi, slippage, gaps, dan eksekusi.");
+ renderDrawdown(bal,rp);
+}
+function renderDrawdown(b,r){const tb=$("drawdownRows");tb.innerHTML="";if(!(b>0&&r>0&&r<100)){tb.innerHTML="<tr><td colspan='4'>Masukkan equity dan risk valid.</td></tr>";return}
+ for(let n=1;n<=6;n++){const rem=b*Math.pow(1-r/100,n),loss=b-rem,tr=document.createElement("tr");tr.innerHTML="<td>"+n+" loss"+(n>1?"es":"")+"</td><td>"+money(rem)+"</td><td class='badtext'>-"+fmt(loss/b*100)+"%</td><td class='warntext'>"+fmt(loss/rem*100)+"%</td>";tb.appendChild(tr)}}
+function updateChecklist(){const cs=[...document.querySelectorAll(".ict-check")],n=cs.filter(c=>c.checked).length,b=$("scoreBadge"),ad=$("ictAdvice");b.className="badge "+(n===7?"good":n>=5?"warn":"bad");b.textContent=n+"/7 · "+(n===7?"COMPLETE":n>=5?"REVIEW":"NO TRADE");
+ if(n===7){ad.className="alert good";ad.innerHTML="<strong>Checklist lengkap · Final check tetap wajib</strong><p>7/7 bukan jaminan profit. Pastikan SL, TP, news risk, dan batas loss masih masuk akal.</p>"}else if(n>=5){ad.className="alert warn";ad.innerHTML="<strong>Setup parsial · Jangan terburu-buru</strong><p>"+n+"/7 kriteria terpenuhi. Skor checklist bukan probabilitas kemenangan.</p>"}else{ad.className="alert bad";ad.innerHTML="<strong>NO TRADE · Validasi belum cukup</strong><p>Baru "+n+"/7 kriteria. Jangan mencentang berdasarkan harapan atau takut ketinggalan.</p>"}store.set("riskforge_checks",cs.map(c=>c.checked))}
+document.querySelectorAll(".ict-check").forEach((c,i)=>{const s=store.get("riskforge_checks",[]);c.checked=!!s[i];c.addEventListener("change",updateChecklist)});
+let trades=store.get("riskforge_trades",[]);if(!Array.isArray(trades))trades=[];trades=Array.from({length:13},(_,i)=>({result:["WIN","LOSS","BE"].includes((trades[i]||{}).result)?trades[i].result:null,disciplined:!!((trades[i]||{}).disciplined)}));
+function saveTrades(){store.set("riskforge_trades",trades)}
+function renderTrades(){const g=$("tradeGrid");g.innerHTML="";trades.forEach((t,i)=>{const box=document.createElement("div"),btn=document.createElement("button"),lab=document.createElement("label"),cb=document.createElement("input");box.className="tradebox";btn.type="button";btn.className=t.result==="WIN"?"win":t.result==="LOSS"?"loss":t.result==="BE"?"be":"";btn.textContent="#"+(i+1)+" "+(t.result||"—");btn.addEventListener("click",()=>{const states=[null,"WIN","LOSS","BE"];t.result=states[(states.indexOf(t.result)+1)%states.length];saveTrades();renderTrades()});lab.className="rulefollow";cb.type="checkbox";cb.checked=t.disciplined;cb.disabled=!t.result;cb.addEventListener("change",()=>{t.disciplined=cb.checked;saveTrades();renderTrades()});lab.append(cb,document.createTextNode("Rules"));box.append(btn,lab);g.append(box)});
+ const filled=trades.filter(t=>t.result),w=filled.filter(t=>t.result==="WIN").length,l=filled.filter(t=>t.result==="LOSS").length,be=filled.filter(t=>t.result==="BE").length,follow=filled.filter(t=>t.disciplined).length;
+ $("batchProgress").textContent=filled.length+"/13 trade tercatat";$("tradeStats").textContent="W "+w+" · L "+l+" · BE "+be;$("disciplineStats").textContent="Rule-followed "+follow+"/"+filled.length;
+ const last=filled[filled.length-1];let streak=0;for(let i=filled.length-1;i>=0&&filled[i].result==="WIN";i--)streak++;
+ $("lossAlert").hidden=!(last&&last.result==="LOSS");$("winAlert").hidden=streak<3;saveTrades()}
+$("resetTracker").addEventListener("click",()=>{if(confirm("Reset semua hasil dan rule-followed untuk batch 13 trade?")){trades=Array.from({length:13},()=>({result:null,disciplined:false}));renderTrades()}});
+function simulation(){const wr=Math.min(.99,Math.max(.01,(Number($("winRate").value)||50)/100)),rr=Math.min(10,Math.max(.1,Number($("simRR").value)||2)),start=Math.max(1,Number($("balance").value)||50000),risk=Math.min(.2,Math.max(.0001,(Number($("risk").value)||1)/100)),expect=wr*rr-(1-wr);
+ $("expectancy").textContent=(expect>=0?"+":"")+expect.toFixed(2)+"R";let ends=[],dds=[],hit=0,sample=[];
+ for(let run=0;run<500;run++){let eq=start,peak=start,maxdd=0,streak=0,hasFour=false,path=[start];for(let i=0;i<50;i++){const r=eq*risk;if(Math.random()<wr){eq+=r*rr;streak=0}else{eq-=r;streak++;if(streak>=4)hasFour=true}peak=Math.max(peak,eq);maxdd=Math.max(maxdd,(peak-eq)/peak*100);path.push(eq)}ends.push(eq);dds.push(maxdd);if(hasFour)hit++;if(run===0)sample=path}
+ ends.sort((a,b)=>a-b);dds.sort((a,b)=>a-b);$("medianEquity").textContent=money(ends[250]);$("medianDD").textContent=fmt(dds[250],1)+"%";$("fourLossOdds").textContent=fmt(hit/5,1)+"%";drawChart(sample)}
+function drawChart(vals){const c=$("equityChart"),r=c.getBoundingClientRect(),ratio=window.devicePixelRatio||1,w=Math.max(280,r.width),h=210;c.width=w*ratio;c.height=h*ratio;const x=c.getContext("2d");x.setTransform(ratio,0,0,ratio,0,0);x.clearRect(0,0,w,h);const p={l:12,r:12,t:17,b:20},cw=w-p.l-p.r,ch=h-p.t-p.b,min=Math.min(...vals),max=Math.max(...vals),range=max-min||1;x.font="10px system-ui";x.strokeStyle="#26334d";x.fillStyle="#8997b0";for(let i=0;i<=4;i++){const y=p.t+ch*i/4;x.beginPath();x.moveTo(p.l,y);x.lineTo(w-p.r,y);x.stroke()}x.fillText(money(max),p.l,11);x.fillText(money(min),p.l,h-3);x.beginPath();vals.forEach((v,i)=>{const px=p.l+cw*i/(vals.length-1),py=p.t+ch-(v-min)/range*ch;i?x.lineTo(px,py):x.moveTo(px,py)});x.strokeStyle="#59dfd0";x.lineWidth=2;x.stroke()}
+ids.forEach(id=>$(id).addEventListener("input",()=>{saveSettings();calculate();if(id==="balance"||id==="risk")simulation()}));$("runSim").addEventListener("click",simulation);$("winRate").addEventListener("change",simulation);$("simRR").addEventListener("change",simulation);window.addEventListener("resize",simulation);
+calculate();updateChecklist();renderTrades();simulation();
+})();
+</script></body></html>
